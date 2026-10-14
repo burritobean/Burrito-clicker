@@ -1,0 +1,586 @@
+Edit in JSFiddle
+CSS
+/* =================================
+   BURRITO CLICKER — VISUAL DESIGN
+   ================================= */
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+
+:root {
+  --bg: #0b0d0a;
+  --panel: #131610;
+  --panel-hover: #1b2016;
+  --border: #292e23;
+  --green: #d9ff70;
+  --green-dark: #a7ce43;
+  --text: #f3f5ed;
+  --muted: #929688;
+  --radius: 18px;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  min-height: 100%;
+  background: var(--bg);
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background:
+    radial-gradient(
+      ellipse at 50% 0%,
+      rgba(130, 170, 60, 0.09),
+      transparent 48%
+    ),
+    var(--bg);
+  color: var(--text);
+  font-family: 'Inter', -apple-system,
+    BlinkMacSystemFont, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+button {
+  font: inherit;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.game {
+  width: 100%;
+  max-width: 1000px;
+  min-height: 100vh;
+  margin: 0 auto;
+  padding: 0 28px;
+  display: flex;
+  flex-direction: column;
+}
+
+/* TOP BAR */
+
+.topbar {
+  min-height: 76px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  border-bottom: 1px solid var(--border);
+}
+
+.brand {
+  font-size: 15px;
+  font-weight: 900;
+  letter-spacing: -0.6px;
+}
+
+.save-status {
+  color: var(--green);
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 1px;
+}
+
+/* MAIN CONTENT */
+
+.game-content {
+  width: 100%;
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 54px 0 40px;
+  flex: 1;
+}
+
+.eyebrow {
+  margin: 0 0 12px;
+  color: var(--green);
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 2px;
+  line-height: 1.6;
+}
+
+h1 {
+  margin: 0;
+  max-width: 560px;
+  font-size: clamp(32px, 6vw, 54px);
+  line-height: 1.08;
+  letter-spacing: -2.8px;
+  font-weight: 900;
+}
+
+h1 span {
+  color: var(--green);
+}
+
+.subtitle {
+  margin: 15px 0 30px;
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 1.7;
+}
+
+/* BURRITO COUNTER */
+
+.counter-card {
+  padding: 23px;
+  margin-bottom: 22px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: linear-gradient(
+    135deg,
+    #171b12,
+    #11130f
+  );
+  text-align: center;
+}
+
+.counter-label {
+  margin: 0 0 8px;
+  color: var(--muted);
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 2px;
+}
+
+#burrito-count {
+  color: var(--green);
+  font-size: clamp(40px, 9vw, 64px);
+  font-weight: 900;
+  line-height: 1.15;
+  letter-spacing: -2px;
+  overflow-wrap: anywhere;
+}
+
+#burrito-rate {
+  margin: 8px 0 0;
+  color: var(--muted);
+  font-size: 12px;
+}
+
+/* MAIN CLICK BUTTON */
+
+#burrito-button {
+  width: 100%;
+  min-height: 205px;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border: 1px solid #b8e65b;
+  border-radius: 22px;
+  background: linear-gradient(
+    145deg,
+    #dfff8c,
+    #c6f45d
+  );
+  color: #171d0c;
+  cursor: pointer;
+  box-shadow:
+    0 6px 0 #8fb63d,
+    0 12px 35px rgba(177, 228, 79, 0.09);
+  transition:
+    transform 0.12s ease,
+    box-shadow 0.12s ease,
+    filter 0.12s ease;
+  touch-action: manipulation;
+  user-select: none;
+}
+
+#burrito-button:hover {
+  filter: brightness(1.04);
+}
+
+#burrito-button:active {
+  transform: translateY(5px) scale(0.99);
+  box-shadow:
+    0 1px 0 #8fb63d,
+    0 5px 16px rgba(177, 228, 79, 0.08);
+}
+
+.burrito-emoji {
+  font-size: 72px;
+  line-height: 1.2;
+  filter: drop-shadow(0 5px 4px rgba(0,0,0,0.12));
+  transition: transform 0.16s ease;
+}
+
+#burrito-button:active .burrito-emoji {
+  transform: rotate(-9deg) scale(1.1);
+}
+
+.click-label {
+  font-size: 13px;
+  font-weight: 900;
+  letter-spacing: 1.5px;
+}
+
+.click-subtitle {
+  font-size: 11px;
+  font-weight: 500;
+  opacity: 0.7;
+}
+
+/* STAT CARDS */
+
+.stats {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin: 18px 0 46px;
+}
+
+.stat-card {
+  min-width: 0;
+  padding: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+}
+
+.stat-card span {
+  color: var(--muted);
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 1.3px;
+}
+
+.stat-card strong {
+  color: var(--text);
+  font-size: 26px;
+  font-weight: 800;
+  overflow-wrap: anywhere;
+}
+
+/* UPGRADE SHOP */
+
+.shop-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 18px;
+}
+
+.shop-heading .eyebrow {
+  margin-bottom: 5px;
+}
+
+h2 {
+  margin: 0;
+  font-size: 24px;
+  font-weight: 800;
+  letter-spacing: -1px;
+}
+
+.shop-icon {
+  width: 38px;
+  height: 38px;
+  display: grid;
+  place-items: center;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  color: var(--green);
+  font-size: 20px;
+}
+
+/* JavaScript will populate this area later. */
+
+#upgrade-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* Upgrade card styles for Step 3 */
+
+.upgrade-card {
+  padding: 17px;
+  display: flex;
+  align-items: center;
+  gap: 13px;
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 15px;
+  transition:
+    background 0.15s ease,
+    border-color 0.15s ease;
+}
+
+.upgrade-card:hover {
+  background: var(--panel-hover);
+  border-color: #414b32;
+}
+
+.upgrade-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.upgrade-info h3 {
+  margin: 0 0 5px;
+  font-size: 14px;
+  font-weight: 800;
+}
+
+.upgrade-info p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 11px;
+  line-height: 1.6;
+}
+
+.upgrade-price {
+  margin-top: 8px;
+  color: var(--green);
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.upgrade-card button {
+  min-height: 42px;
+  padding: 0 14px;
+  border: 0;
+  border-radius: 10px;
+  background: var(--green);
+  color: #171d0c;
+  font-size: 11px;
+  font-weight: 900;
+  cursor: pointer;
+  touch-action: manipulation;
+}
+
+.upgrade-card button:disabled {
+  background: #292e23;
+  color: #777d6d;
+  cursor: not-allowed;
+}
+
+/* RESET BUTTON */
+
+.reset-button {
+  display: block;
+  margin: 28px auto 0;
+  padding: 11px 17px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: transparent;
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 700;
+  cursor: pointer;
+  touch-action: manipulation;
+}
+
+.reset-button:hover {
+  color: var(--text);
+  border-color: #555c49;
+}
+
+/* FOOTER */
+
+footer {
+  padding: 22px 0;
+  border-top: 1px solid var(--border);
+  color: #64695d;
+  text-align: center;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+}
+
+/* IPAD AND MOBILE */
+
+@media (max-width: 600px) {
+  .game {
+    padding: 0 18px;
+  }
+
+  .topbar {
+    min-height: 64px;
+  }
+
+  .brand {
+    font-size: 13px;
+  }
+
+  .save-status {
+    font-size: 9px;
+    letter-spacing: 0.7px;
+  }
+
+  .game-content {
+    padding-top: 38px;
+  }
+
+  h1 {
+    letter-spacing: -1.7px;
+  }
+
+  .subtitle {
+    font-size: 13px;
+  }
+
+  .counter-card {
+    padding: 21px 12px;
+  }
+
+
+  #burrito-button {
+    min-height: 190px;
+  }
+
+  .burrito-emoji {
+    font-size: 65px;
+  }
+
+  .stats {
+    margin-bottom: 38px;
+  }
+
+  .stat-card {
+    padding: 15px;
+  }
+
+  .stat-card strong {
+    font-size: 23px;
+  }
+
+  h2 {
+    font-size: 22px;
+  }
+
+  .upgrade-card {
+    padding: 13px;
+    gap: 9px;
+  }
+
+  .upgrade-card button {
+    padding: 0 11px;
+  }
+}
+
+/* REDUCED MOTION ACCESSIBILITY */
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    transition-duration: 0.01ms !important;
+  }
+}
+
+.shop-tabs {
+  display: flex;
+  gap: 10px;
+  margin: 20px 0;
+}
+
+.shop-tab {
+  flex: 1;
+  padding: 13px 10px;
+  border: 1px solid #343a30;
+  border-radius: 12px;
+  background: #171a15;
+  color: #a5aa9d;
+  font-weight: 700;
+  font-size: 13px;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.shop-tab.active {
+  background: #d9ff70;
+  color: #14170e;
+  border-color: #d9ff70;
+  box-shadow: 0 0 15px #d9ff7025;
+}
+
+.shop-tab:not(.active):hover {
+  border-color: #d9ff70;
+  color: #d9ff70;
+}
+
+.achievements {
+  margin-top: 28px;
+  padding: 18px;
+  border: 1px solid #343a30;
+  border-radius: 16px;
+  background: #11140f;
+}
+
+#achievement-progress {
+  color: #d9ff70;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.achievement-progress-bar {
+  height: 8px;
+  margin: 16px 0;
+  background: #292d25;
+  border-radius: 99px;
+  overflow: hidden;
+}
+
+#achievement-progress-fill {
+  width: 0%;
+  height: 100%;
+  background: #d9ff70;
+  border-radius: 99px;
+  transition: width 0.3s ease;
+}
+
+.achievement-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 13px;
+  margin-bottom: 10px;
+  border: 1px solid #343a30;
+  border-radius: 12px;
+  background: #171a15;
+}
+
+.achievement-card.unlocked {
+  border-color: #819c43;
+}
+
+.achievement-card.locked {
+  opacity: 0.65;
+}
+
+.achievement-icon {
+  font-size: 28px;
+}
+
+.achievement-info {
+  flex: 1;
+}
+
+.achievement-info h3 {
+  margin: 0 0 5px;
+  font-size: 15px;
+}
+
+.achievement-info p {
+  margin: 0;
+  color: #a5aa9d;
+  font-size: 12px;
+}
+
+.achievement-reward {
+  color: #d9ff70;
+  font-size: 12px;
+  font-weight: 700;
+}
+@media (max-width: 400px) {
+  .shop-tabs {
+    flex-direction: column;
+  }
+}
