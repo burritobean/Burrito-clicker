@@ -19,7 +19,7 @@ Burrito Clicker is a lightweight idle game built with HTML, CSS, and JavaScript.
 
 Play Burrito Clicker using GitHub Pages:
 
-[Launch Burrito Clicker](https://YOUR-USERNAME.github.io/burrito-clicker/)
+[Launch Burrito Clicker](https://burritobean.github.io/burrito-clicker/)
 
 ## Technologies
 
