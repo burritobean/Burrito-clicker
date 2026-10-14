@@ -347,6 +347,9 @@ function renderUpgrades() {
     }
 
     info.append(name, description, price, ownedText);
+     
+const buyButton = document.createElement("button");
+buyButton.textContent = "BUY";
 
     buyButton.disabled = state.burritos + 0.000001 < cost;
 
