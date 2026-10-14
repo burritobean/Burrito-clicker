@@ -4,146 +4,88 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
   <title>Burrito Clicker</title>
-
-  <!-- Connect the existing stylesheet -->
   <link rel="stylesheet" href="style.css">
-
-  <!-- Browser theme color -->
-  <meta name="theme-color" content="#111111">
+  <meta name="theme-color" content="#0b0d0a">
 </head>
-
 <body>
   <div class="game">
-
-    <!-- HEADER -->
     <header class="topbar">
       <div class="brand">BURRITO CLICKER</div>
       <div class="save-status">● AUTO-SAVE ON</div>
     </header>
 
     <main class="game-content">
+      <p class="eyebrow">WELCOME TO THE EMPIRE</p>
+      <h1>Build your <span>burrito</span> empire.</h1>
+      <p class="subtitle">Click your way from a single burrito to a multiverse of deliciousness.</p>
 
-      <!-- GAME STATS -->
+      <section class="counter-card">
+        <p class="counter-label">YOUR BURRITOS</p>
+        <div id="burrito-count">0</div>
+        <p id="burrito-rate">0 burritos per second</p>
+      </section>
+
+      <button id="burrito-button" type="button" aria-label="Make a burrito">
+        <span class="burrito-emoji">🌯</span>
+        <span class="click-label">MAKE A BURRITO</span>
+        <span class="click-subtitle">Tap to grow your empire</span>
+      </button>
+
       <section class="stats">
         <div class="stat-card">
-          <span class="stat-label">TOTAL BURRITOS</span>
-          <h2 id="burrito-count">0</h2>
+          <span>TOTAL MADE</span>
+          <strong id="total-made">0</strong>
         </div>
-
         <div class="stat-card">
-          <span class="stat-label">TOTAL MADE</span>
-          <h2 id="total-made">0</h2>
-        </div>
-
-        <div class="stat-card">
-          <span class="stat-label">PER CLICK</span>
-          <h2 id="per-click">1</h2>
+          <span>PER CLICK</span>
+          <strong id="per-click">1</strong>
         </div>
       </section>
 
-      <!-- MAIN CLICKER -->
-      <section class="clicker">
-        <p class="clicker-subtitle">
-          THE ULTIMATE BURRITO EMPIRE
-        </p>
-
-        <button
-          id="burrito-button"
-          class="burrito-button"
-          type="button"
-          aria-label="Make a burrito"
-        >
-          🌯
-        </button>
-
-        <p class="click-instruction">
-          TAP THE BURRITO TO MAKE MORE!
-        </p>
-
-        <p id="burrito-rate">
-          0 burritos per second
-        </p>
-      </section>
-
-      <!-- SHOP -->
       <section class="shop">
-        <h2>THE SHOP</h2>
+        <div class="shop-heading">
+          <div>
+            <p class="eyebrow">SPEND YOUR BURRITOS</p>
+            <h2>The Shop</h2>
+          </div>
+          <div class="shop-icon">↗</div>
+        </div>
 
         <div class="shop-tabs">
-          <button
-            id="click-tab"
-            class="shop-tab active"
-            type="button"
-          >
-            Click Upgrades
-          </button>
-
-          <button
-            id="auto-tab"
-            class="shop-tab"
-            type="button"
-          >
-            Auto Production
-          </button>
+          <button id="click-tab" class="shop-tab active" type="button">Click Upgrades</button>
+          <button id="auto-tab" class="shop-tab" type="button">Auto Production</button>
         </div>
 
-        <!-- CLICK UPGRADES -->
         <div class="shop-panel" id="click-shop">
-          <h3>Click Upgrades</h3>
-          <p>Make every tap more powerful.</p>
-
           <div id="click-upgrade-list"></div>
         </div>
 
-        <!-- AUTOMATIC PRODUCTION -->
         <div class="shop-panel" id="auto-shop" hidden>
-          <h3>Auto Production</h3>
-          <p>Earn burritos automatically.</p>
-
           <div id="auto-upgrade-list"></div>
         </div>
       </section>
 
-      <!-- ACHIEVEMENTS -->
       <section class="achievements">
         <div class="achievements-header">
-          <div>
-            <h2>ACHIEVEMENTS</h2>
-            <p>Complete milestones to earn bonus burritos.</p>
-          </div>
-
+          <h2>Achievements</h2>
           <span id="achievement-progress">0 / 6</span>
         </div>
-
+        <p class="subtitle">Complete milestones to earn bonus burritos.</p>
         <div class="achievement-progress-bar">
           <div id="achievement-progress-fill"></div>
         </div>
-
         <div id="achievement-list"></div>
       </section>
 
-      <!-- RESET -->
       <section class="game-controls">
-        <button
-          id="reset-button"
-          class="reset-button"
-          type="button"
-        >
-          Reset Game
-        </button>
+        <button id="reset-button" class="reset-button" type="button">Reset Game</button>
       </section>
-
     </main>
 
-    <footer>
-      BURRITO CLICKER · MADE FOR THE HUNGRY
-    </footer>
-
+    <footer>BURRITO CLICKER · MADE FOR THE HUNGRY</footer>
   </div>
 
-  <!-- Load the game engine AFTER the HTML elements -->
   <script src="script.js"></script>
 </body>
 </html>
