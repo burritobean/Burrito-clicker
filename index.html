@@ -1,0 +1,95 @@
+Edit in JSFiddle
+JavaScript
+HTML
+CSS
+Result
+<div class="game">
+  <header class="topbar">
+    <div class="brand">BURRITO CLICKER</div>
+    <div class="save-status">● AUTO-SAVE ON</div>
+  </header>
+
+  <main class="game-content">
+    <p class="eyebrow">WELCOME TO THE BURRITO ECONOMY</p>
+    <h1>Build your <span>burrito empire.</span></h1>
+    <p class="subtitle">One click closer to burrito domination.</p>
+
+    <section class="counter-card">
+      <p class="counter-label">YOUR BURRITOS</p>
+      <div id="burrito-count">0</div>
+      <p id="burrito-rate">0 burritos per second</p>
+    </section>
+
+    <button id="burrito-button" aria-label="Make a burrito">
+      <span class="burrito-emoji">🌯</span>
+      <span class="click-label">MAKE A BURRITO</span>
+      <span class="click-subtitle">Tap to earn burritos</span>
+    </button>
+
+    <section class="stats">
+      <div class="stat-card">
+        <span>TOTAL MADE</span>
+        <strong id="total-made">0</strong>
+      </div>
+      <div class="stat-card">
+        <span>PER CLICK</span>
+        <strong id="per-click">1</strong>
+      </div>
+    </section>
+
+    <section class="shop">
+      <div class="shop-heading">
+        <div>
+          <p class="eyebrow">SPEND YOUR EARNINGS</p>
+          <h2>Burrito upgrades</h2>
+        </div>
+        <span class="shop-icon">↗</span>
+      </div>
+
+      
+
+<div class="shop-tabs">
+  <button id="click-tab" class="shop-tab active" type="button">
+    Click Upgrades
+  </button>
+  <button id="auto-tab" class="shop-tab" type="button">
+    Auto Production
+  </button>
+</div>
+
+<div class="shop-panel" id="click-shop">
+  <h3>Click Upgrades</h3>
+  <p>Make every tap more powerful.</p>
+  <div id="click-upgrade-list"></div>
+</div>
+
+<div class="shop-panel" id="auto-shop" hidden>
+  <h3>Auto Production</h3>
+  <p>Earn burritos automatically.</p>
+  <div id="auto-upgrade-list"></div>
+</div>
+    </section>
+
+<section class="achievements">
+  <div class="shop-heading">
+    <div>
+      <p class="eyebrow">YOUR MILESTONES</p>
+      <h2>Achievements</h2>
+    </div>
+    <span id="achievement-progress">0 / 6</span>
+  </div>
+
+  <div class="achievement-progress-bar">
+    <div id="achievement-progress-fill"></div>
+  </div>
+
+  <div id="achievement-list"></div>
+</section>
+
+    <button id="reset-button" class="reset-button">
+      Reset game
+    </button>
+  </main>
+
+  <footer>BURRITO CLICKER · MADE FOR THE HUNGRY</footer>
+</div>
