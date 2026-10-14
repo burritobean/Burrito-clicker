@@ -21,8 +21,6 @@ Play Burrito Clicker using GitHub Pages:
 
 [Launch Burrito Clicker](https://YOUR-USERNAME.github.io/burrito-clicker/)
 
-Replace `YOUR-USERNAME` with your GitHub username.
-
 ## Technologies
 
 * HTML
