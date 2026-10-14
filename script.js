@@ -1,8 +1,9 @@
-Edit in JSFiddle
-JavaScript
-/* ==================================
-   BURRITO CLICKER — GAME ENGINE
-   ================================== */
+
+/* ==========================================
+   BURRITO CLICKER — COMPLETE GAME ENGINE
+   ========================================== */
+
+"use strict";
 
 const SAVE_KEY = "burritoClickerSave_v1";
 
@@ -160,7 +161,7 @@ const upgrades = [
   },
   {
     id: "timeMachine",
-    name: "Burrito Time Machine",
+    name: "⏳ Burrito Time Machine",
     description: "Import burritos from the future.",
     baseCost: 25000000,
     type: "production",
@@ -192,20 +193,23 @@ const state = {
 };
 
 const burritoCount = document.querySelector("#burrito-count");
-const totalMade = document.querySelector("#total-made");
-const perClick = document.querySelector("#per-click");
+const totalMadeDisplay = document.querySelector("#total-made");
+const perClickDisplay = document.querySelector("#per-click");
 const burritoRate = document.querySelector("#burrito-rate");
 const burritoButton = document.querySelector("#burrito-button");
-const upgradeList = document.querySelector("#upgrade-list");
 const resetButton = document.querySelector("#reset-button");
 const saveStatus = document.querySelector(".save-status");
 
 let saveTimer;
 let lastFrame = performance.now();
+let lastRender = 0;
+let lastAutoSave = 0;
 
 upgrades.forEach(upgrade => {
   state.owned[upgrade.id] = 0;
 });
+
+/* BASIC HELPERS */
 
 function getOwned(id) {
   return state.owned[id] || 0;
@@ -224,6 +228,8 @@ function getBurritosPerSecond() {
 }
 
 function formatNumber(number) {
+  if (!Number.isFinite(number)) return "∞";
+
   if (number < 1000) {
     return Number(number.toFixed(1)).toLocaleString("en-US");
   }
@@ -240,7 +246,7 @@ function formatNumber(number) {
   return value.toFixed(2) + units[unitIndex];
 }
 
-
+/* ACHIEVEMENTS */
 
 function checkAchievements() {
   let changed = false;
@@ -257,6 +263,7 @@ function checkAchievements() {
   });
 
   if (changed) {
+    renderAchievements();
     saveGame();
   }
 }
@@ -268,8 +275,7 @@ function renderAchievements() {
   list.replaceChildren();
 
   achievements.forEach(achievement => {
-    const unlocked =
-      unlockedAchievements.includes(achievement.id);
+    const unlocked = unlockedAchievements.includes(achievement.id);
 
     const card = document.createElement("div");
     card.className = "achievement-card " +
@@ -295,17 +301,30 @@ function renderAchievements() {
     list.appendChild(card);
   });
 
-  const count = unlockedAchievements.length;
+  const progress = document.getElementById("achievement-progress");
+  const progressFill = document.getElementById("achievement-progress-fill");
 
-  document.getElementById("achievement-progress").textContent =
-    count + " / " + achievements.length;
+  if (progress) {
+    progress.textContent =
+      unlockedAchievements.length + " / " + achievements.length;
+  }
 
-  document.getElementById("achievement-progress-fill").style.width =
-    (count / achievements.length * 100) + "%";
+  if (progressFill) {
+    progressFill.style.width =
+      (unlockedAchievements.length / achievements.length * 100) + "%";
+  }
 }
+
+/* SHOP */
+
 function renderUpgrades() {
   const clickList = document.getElementById("click-upgrade-list");
   const autoList = document.getElementById("auto-upgrade-list");
+
+  if (!clickList || !autoList) {
+    console.error("Shop lists missing. Check index.html IDs.");
+    return;
+  }
 
   clickList.replaceChildren();
   autoList.replaceChildren();
@@ -347,23 +366,20 @@ function renderUpgrades() {
     }
 
     info.append(name, description, price, ownedText);
-     
-const buyButton = document.createElement("button");
-buyButton.textContent = "BUY";
 
+    // Create a separate BUY button for every upgrade.
+    const buyButton = document.createElement("button");
+    buyButton.type = "button";
+    buyButton.textContent = "BUY";
     buyButton.disabled = state.burritos + 0.000001 < cost;
 
-
     buyButton.addEventListener("click", () => {
-  buyUpgrade(upgrade);
-  });
+      buyUpgrade(upgrade);
+    });
 
     card.append(info, buyButton);
 
-    if (
-      upgrade.type === "click" ||
-      upgrade.type === "multiplier"
-    ) {
+    if (upgrade.type === "click" || upgrade.type === "multiplier") {
       clickList.appendChild(card);
     } else {
       autoList.appendChild(card);
@@ -371,165 +387,188 @@ buyButton.textContent = "BUY";
   });
 }
 
-  function render() {
-    burritoCount.textContent = formatNumber(state.burritos);
-    totalMade.textContent = formatNumber(state.totalMade);
-    perClick.textContent = formatNumber(state.perClick);
+/* DISPLAY */
 
-    burritoRate.textContent =
-      formatNumber(getBurritosPerSecond()) + " burritos per second";
-
-    renderUpgrades();
-    renderAchievements();
+function render() {
+  if (
+    !burritoCount ||
+    !totalMadeDisplay ||
+    !perClickDisplay ||
+    !burritoRate
+  ) {
+    console.error("Game display elements are missing. Check index.html IDs.");
+    return;
   }
 
-  function makeBurrito() {
-    state.burritos += state.perClick;
-    state.totalMade += state.perClick;
+  burritoCount.textContent = formatNumber(state.burritos);
+  totalMadeDisplay.textContent = formatNumber(state.totalMade);
+  perClickDisplay.textContent = formatNumber(state.perClick);
 
-    checkAchievements();
-    render();
-    scheduleSave();
-  }
+  burritoRate.textContent =
+    formatNumber(getBurritosPerSecond()) + " burritos per second";
 
-
-  function buyUpgrade(upgrade) {
-    const cost = getCost(upgrade);
-    const balance = state.burritos;
-
-    // Check the real balance against the current price.
-    if (balance < cost) {
-      render();
-      return;
-    }
-
-    state.burritos = balance - cost;
-    state.owned[upgrade.id] = getOwned(upgrade.id) + 1;
-
-if (upgrade.type === "click") {
-  state.perClick += upgrade.power;
+  renderUpgrades();
+  renderAchievements();
 }
 
-if (upgrade.type === "multiplier") {
-  state.perClick *= upgrade.power;
+/* CLICKING */
+
+function makeBurrito() {
+  state.burritos += state.perClick;
+  state.totalMade += state.perClick;
+
+  checkAchievements();
+  render();
+  scheduleSave();
 }
 
+/* BUYING UPGRADES */
+
+function buyUpgrade(upgrade) {
+  const cost = getCost(upgrade);
+  const balance = state.burritos;
+
+  if (balance + 0.000001 < cost) {
     render();
-    saveGame();
+    return;
   }
 
-  function saveGame() {
-    try {
-      localStorage.setItem(SAVE_KEY, JSON.stringify(state));
+  state.burritos = Math.max(0, balance - cost);
+  state.owned[upgrade.id] = getOwned(upgrade.id) + 1;
 
-      if (saveStatus) {
-        saveStatus.textContent = "● GAME SAVED";
-      }
-    } catch (error) {
-      if (saveStatus) {
-        saveStatus.textContent = "● SAVE UNAVAILABLE";
-      }
-    }
+  if (upgrade.type === "click") {
+    state.perClick += upgrade.power;
   }
 
-  function scheduleSave() {
+  if (upgrade.type === "multiplier") {
+    state.perClick *= upgrade.power;
+  }
+
+  checkAchievements();
+  render();
+  saveGame();
+}
+
+/* SAVE GAME */
+
+function saveGame() {
+  try {
+    const saveData = {
+      ...state,
+      unlockedAchievements
+    };
+
+    localStorage.setItem(SAVE_KEY, JSON.stringify(saveData));
+
     if (saveStatus) {
-      saveStatus.textContent = "● SAVING...";
+      saveStatus.textContent = "● GAME SAVED";
     }
+  } catch (error) {
+    console.error("Save failed:", error);
 
-    clearTimeout(saveTimer);
-    saveTimer = setTimeout(saveGame, 300);
+    if (saveStatus) {
+      saveStatus.textContent = "● SAVE UNAVAILABLE";
+    }
+  }
+}
+
+function scheduleSave() {
+  if (saveStatus) {
+    saveStatus.textContent = "● SAVING...";
   }
 
-  function loadGame() {
-    try {
-      const saved = localStorage.getItem(SAVE_KEY);
+  clearTimeout(saveTimer);
+  saveTimer = setTimeout(saveGame, 300);
+}
 
-      if (!saved) return;
+function loadGame() {
+  try {
+    const saved = localStorage.getItem(SAVE_KEY);
+    if (!saved) return;
 
-      const data = JSON.parse(saved);
+    const data = JSON.parse(saved);
 
-      if (
-        typeof data.burritos !== "number" ||
-        !Number.isFinite(data.burritos) ||
-        data.burritos < 0
-      ) {
-        return;
-      }
-
+    if (
+      typeof data.burritos === "number" &&
+      Number.isFinite(data.burritos) &&
+      data.burritos >= 0
+    ) {
       state.burritos = data.burritos;
+    }
 
-      if (
-        typeof data.totalMade === "number" &&
-        Number.isFinite(data.totalMade) &&
-        data.totalMade >= 0
-      ) {
-        state.totalMade = data.totalMade;
-      }
+    if (
+      typeof data.totalMade === "number" &&
+      Number.isFinite(data.totalMade) &&
+      data.totalMade >= 0
+    ) {
+      state.totalMade = data.totalMade;
+    }
 
-      if (
-        typeof data.perClick === "number" &&
-        Number.isFinite(data.perClick) &&
-        data.perClick >= 1
-      ) {
-        state.perClick = data.perClick;
-      }
+    if (
+      typeof data.perClick === "number" &&
+      Number.isFinite(data.perClick) &&
+      data.perClick >= 1
+    ) {
+      state.perClick = data.perClick;
+    }
 
-      if (data.owned && typeof data.owned === "object") {
-        upgrades.forEach(upgrade => {
-          const amount = data.owned[upgrade.id];
+    if (data.owned && typeof data.owned === "object") {
+      upgrades.forEach(upgrade => {
+        const amount = data.owned[upgrade.id];
 
-          if (
-            typeof amount === "number" &&
-            Number.isInteger(amount) &&
-            amount >= 0
-          ) {
-            state.owned[upgrade.id] = amount;
-          }
-        });
-      }
-    } catch (error) {
-      console.warn("Couldn't load the saved game.", error);
+        if (
+          typeof amount === "number" &&
+          Number.isInteger(amount) &&
+          amount >= 0
+        ) {
+          state.owned[upgrade.id] = amount;
+        }
+      });
+    }
+
+    if (Array.isArray(data.unlockedAchievements)) {
+      unlockedAchievements = data.unlockedAchievements.filter(id =>
+        achievements.some(achievement => achievement.id === id)
+      );
+    }
+  } catch (error) {
+    console.warn("Couldn't load the saved game.", error);
+  }
+}
+
+/* AUTOMATIC PRODUCTION */
+
+function gameLoop(now) {
+  const elapsed = Math.min((now - lastFrame) / 1000, 0.25);
+  lastFrame = now;
+
+  const earned = getBurritosPerSecond() * elapsed;
+
+  if (earned > 0) {
+    state.burritos += earned;
+    state.totalMade += earned;
+
+    // Automatic production can unlock achievements too.
+    checkAchievements();
+
+    if (now - lastRender >= 250) {
+      render();
+      lastRender = now;
+    }
+
+    if (now - lastAutoSave >= 5000) {
+      saveGame();
+      lastAutoSave = now;
     }
   }
 
-  /* AUTOMATIC BURRITO PRODUCTION */
+  requestAnimationFrame(gameLoop);
+}
 
+/* MAIN BUTTON */
 
-  let lastRender = 0;
-  let lastAutoSave = 0;
-
-  function gameLoop(now) {
-    const elapsed = Math.min((now - lastFrame) / 1000, 0.25);
-    lastFrame = now;
-
-    const earned = getBurritosPerSecond() * elapsed;
-
-    if (earned > 0) {
-      state.burritos += earned;
-      state.totalMade += earned;
-
-      // Update the display only 4 times per second.
-      if (now - lastRender >= 250) {
-        render();
-        lastRender = now;
-      }
-
-      // Save automatically every 5 seconds.
-      if (now - lastAutoSave >= 5000) {
-        saveGame();
-        lastAutoSave = now;
-      }
-    }
-
-    requestAnimationFrame(gameLoop);
-  }
-
-  /* BUTTON EVENTS */
-
+if (burritoButton) {
   burritoButton.addEventListener("click", makeBurrito);
-
-  /* OPTIONAL CLICK FEEDBACK */
 
   burritoButton.addEventListener("click", () => {
     burritoButton.style.filter = "brightness(1.08)";
@@ -538,9 +577,13 @@ if (upgrade.type === "multiplier") {
       burritoButton.style.filter = "";
     }, 100);
   });
+} else {
+  console.error("Missing #burrito-button in index.html");
+}
 
-  /* RESET PROGRESS */
+/* RESET */
 
+if (resetButton) {
   resetButton.addEventListener("click", () => {
     const confirmed = confirm(
       "Reset your entire Burrito Clicker game? This cannot be undone!"
@@ -551,6 +594,7 @@ if (upgrade.type === "multiplier") {
     state.burritos = 0;
     state.totalMade = 0;
     state.perClick = 1;
+    unlockedAchievements = [];
 
     upgrades.forEach(upgrade => {
       state.owned[upgrade.id] = 0;
@@ -559,25 +603,40 @@ if (upgrade.type === "multiplier") {
     render();
     saveGame();
   });
+} else {
+  console.error("Missing #reset-button in index.html");
+}
 
-  /* START GAME */
+/* SHOP TABS */
 
-  loadGame();
-  render();
-  requestAnimationFrame(gameLoop);
+const clickTab = document.getElementById("click-tab");
+const autoTab = document.getElementById("auto-tab");
+const clickShop = document.getElementById("click-shop");
+const autoShop = document.getElementById("auto-shop");
 
-document.getElementById("click-tab").addEventListener("click", () => {
-  document.getElementById("click-shop").hidden = false;
-  document.getElementById("auto-shop").hidden = true;
+if (clickTab && autoTab && clickShop && autoShop) {
+  clickTab.addEventListener("click", () => {
+    clickShop.hidden = false;
+    autoShop.hidden = true;
 
-  document.getElementById("click-tab").classList.add("active");
-  document.getElementById("auto-tab").classList.remove("active");
-});
+    clickTab.classList.add("active");
+    autoTab.classList.remove("active");
+  });
 
-document.getElementById("auto-tab").addEventListener("click", () => {
-  document.getElementById("click-shop").hidden = true;
-  document.getElementById("auto-shop").hidden = false;
+  autoTab.addEventListener("click", () => {
+    clickShop.hidden = true;
+    autoShop.hidden = false;
 
-  document.getElementById("auto-tab").classList.add("active");
-  document.getElementById("click-tab").classList.remove("active");
-});
+    autoTab.classList.add("active");
+    clickTab.classList.remove("active");
+  });
+} else {
+  console.error("One or more shop tab elements are missing in index.html");
+}
+
+/* START GAME */
+
+loadGame();
+checkAchievements();
+render();
+requestAnimationFrame(gameLoop);
